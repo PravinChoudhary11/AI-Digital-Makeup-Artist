@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlowU - AI Skincare Advisor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 15px rgba(219, 123, 255, 0.4);
+    }
+
+    .bg-gradient-radial {
+      background: radial-gradient(circle at top right, rgba(137, 75, 176, 0.15), rgba(32, 45, 58, 0.1));
+    }
+
+    .glass-effect {
+      backdrop-filter: blur(12px);
+      background-color: rgba(17, 24, 39, 0.7);
+    }
+
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .button-glow:hover {
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    }
+
+    .before-after-slider {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .hover-scale {
+      transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+      transform: scale(1.03);
+    }
+
+    .animate-progress {
+      animation: progress 1.5s ease-in-out;
+    }
+    @keyframes pulse {
+      0%   { r: 20; stroke-opacity: 1; }
+      50%  { r: 30; stroke-opacity: 0.5; }
+      100% { r: 20; stroke-opacity: 1; }
+    }
+
+    .animate-pulse-svg circle {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes progress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .testimonial-card {
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.3);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-900 text-gray-100 font-sans bg-gradient-radial overflow-x-hidden">
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-effect border-b border-purple-700/20 shadow-lg">
+    <div class="container mx-auto px-6 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-12 h-12 rounded-full shadow-md border border-purple-500/30 flex items-center justify-center bg-gray-800">
+            <i class="fa-solid fa-spa text-purple-400 text-lg"></i>
+          </div>
+          <h1 class="text-2xl lg:text-3xl font-extrabold text-white tracking-wide glow-text">
+            Glow<span class="text-purple-400">U</span>
+          </h1>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#how-it-works" class="text-gray-300 hover:text-purple-300 font-medium transition-colors">How It Works</a>
+          <a href="#testimonials" class="text-gray-300 hover:text-purple-300 font-medium transition-colors">Testimonials</a>
+          <a href="#about" class="text-gray-300 hover:text-purple-300 font-medium transition-colors">About</a>
+          <button class="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-bold py-2 px-6 rounded-full transition-all shadow-lg button-glow">
+            Get Started
+          </button>
+        </div>
+        <div class="md:hidden">
+          <button id="mobile-menu-button" class="text-white hover:text-purple-400 transition-colors">
+            <i class="fa-solid fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden bg-gray-800 shadow-xl w-full">
+      <div class="container mx-auto px-6 py-4 flex flex-col space-y-4">
+        <a href="#how-it-works" class="text-gray-300 hover:text-purple-300 font-medium transition-colors py-2">How It Works</a>
+        <a href="#testimonials" class="text-gray-300 hover:text-purple-300 font-medium transition-colors py-2">Testimonials</a>
+        <a href="#about" class="text-gray-300 hover:text-purple-300 font-medium transition-colors py-2">About</a>
+        <button class="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-bold py-2 px-6 rounded-full transition-all shadow-lg button-glow w-full">
+          Get Started
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="pt-32 pb-20 relative overflow-hidden">
+    <div class="absolute top-20 left-5 w-64 h-64 bg-purple-500/10 rounded-full filter blur-3xl"></div>
+    <div class="absolute bottom-10 right-5 w-80 h-80 bg-blue-500/10 rounded-full filter blur-3xl"></div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+        <div class="lg:w-1/2 text-center lg:text-left" id="hero-text">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            <span class="text-white">Your Personal</span><br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 glow-text">AI Skincare Expert</span>
+          </h1>
+          <p class="text-xl text-gray-300 mb-8 max-w-xl">Upload a selfie and get personalized skin analysis with product recommendations tailored to your unique skin needs.</p>
+          <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+            <a href="#analysis-section" class="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg button-glow">
+              Try GlowU Now
+            </a>
+            <a href="#how-it-works" class="bg-gray-800/90 text-white hover:bg-gray-700 font-bold py-3 px-8 rounded-full border border-purple-500/30 transition-all">
+              Learn More
+            </a>
+          </div>
+
+          <!-- Features Pills -->
+          <div class="mt-12 flex flex-wrap gap-3 justify-center lg:justify-start">
+            <span class="bg-purple-900/30 text-purple-300 py-1 px-4 rounded-full border border-purple-500/20 text-sm">
+              <i class="fa-solid fa-bolt mr-2"></i>Instant Analysis
+            </span>
+            <span class="bg-blue-900/30 text-blue-300 py-1 px-4 rounded-full border border-blue-500/20 text-sm">
+              <i class="fa-solid fa-shield mr-2"></i>Privacy Protected
+            </span>
+            <span class="bg-pink-900/30 text-pink-300 py-1 px-4 rounded-full border border-pink-500/20 text-sm">
+              <i class="fa-solid fa-star mr-2"></i>Personalized Results
+            </span>
+          </div>
+        </div>
+
+        <div class="lg:w-1/2 relative" id="hero-image">
+          <div class="relative mx-auto w-full max-w-md">
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-3xl transform rotate-6"></div>
+            <div class="relative z-10 rounded-3xl shadow-2xl border border-purple-500/30 w-full h-96 bg-gray-800 flex items-center justify-center overflow-hidden">
+              <!-- Premium beauty-themed SVG animation -->
+              <svg width="240" height="240" viewBox="0 0 240 240">
+                <!-- Background glow effect -->
+                <defs>
+                  <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                    <stop offset="0%" stop-color="#C4B5FD" stop-opacity="0.6">
+                      <animate attributeName="stop-opacity" values="0.6;0.2;0.6" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="100%" stop-color="#C4B5FD" stop-opacity="0">
+                      <animate attributeName="stop-opacity" values="0;0.1;0" dur="4s" repeatCount="indefinite" />
+                    </stop>
+                  </radialGradient>
+                  
+                  <!-- Shimmering effect -->
+                  <filter id="shimmer" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+                    <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="shimmer" />
+                  </filter>
+                </defs>
+                
+                <!-- Background glow -->
+                <circle cx="120" cy="120" r="100" fill="url(#glow)" opacity="0.8">
+                  <animate attributeName="r" values="80;100;80" dur="8s" repeatCount="indefinite" />
+                </circle>
+                
+                <!-- Rose-like pattern with intricate petals -->
+                <g class="flower-pattern" style="transform-origin: center;">
+                  <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite" additive="sum" />
+                  
+                  <!-- Inner petals -->
+                  <g opacity="0.9">
+                    <path d="M120,90 Q135,60 150,80 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,90 Q105,60 90,80 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3.2s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M90,120 Q60,105 80,90 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3.4s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M90,120 Q60,135 80,150 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3.6s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,150 Q105,180 90,160 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3.8s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,150 Q135,180 150,160 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="4s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M150,120 Q180,135 160,150 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="4.2s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M150,120 Q180,105 160,90 T120,120" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="4.4s" repeatCount="indefinite" />
+                    </path>
+                  </g>
+                  
+                  <!-- Middle petals -->
+                  <g opacity="0.8">
+                    <path d="M120,80 Q145,40 170,70 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="4s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,80 Q95,40 70,70 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="4.3s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M70,120 Q40,95 70,70 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="4.6s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M70,120 Q40,145 70,170 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="4.9s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,160 Q95,200 70,170 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="5.2s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,160 Q145,200 170,170 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="5.5s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M170,120 Q200,145 170,170 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="5.8s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M170,120 Q200,95 170,70 T120,120" fill="none" stroke="#D8B4FE" stroke-width="1.8">
+                      <animate attributeName="stroke-opacity" values="0.6;0.9;0.6" dur="6.1s" repeatCount="indefinite" />
+                    </path>
+                  </g>
+                  
+                  <!-- Outer petals -->
+                  <g opacity="0.7">
+                    <path d="M120,70 Q155,20 190,60 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="6s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,70 Q85,20 50,60 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="6.3s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M50,120 Q20,85 60,50 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="6.6s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M50,120 Q20,155 60,190 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="6.9s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,170 Q85,220 50,180 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="7.2s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M120,170 Q155,220 190,180 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="7.5s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M190,120 Q220,155 180,190 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="7.8s" repeatCount="indefinite" />
+                    </path>
+                    <path d="M190,120 Q220,85 180,50 T120,120" fill="none" stroke="#C4B5FD" stroke-width="2" filter="url(#shimmer)">
+                      <animate attributeName="stroke-opacity" values="0.5;0.8;0.5" dur="8.1s" repeatCount="indefinite" />
+                    </path>
+                  </g>
+                </g>
+                
+                <!-- Counter-rotating delicate filigree pattern -->
+                <g class="filigree" opacity="0.6">
+                  <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="45s" repeatCount="indefinite" additive="sum" />
+                  
+                  <path d="M120,95 C140,85 145,65 135,50 C125,35 100,40 120,60 C140,40 165,35 155,50 C145,65 150,85 170,95" stroke="#F0ABFC" fill="none" stroke-width="0.8">
+                    <animate attributeName="stroke-opacity" values="0.4;0.7;0.4" dur="3s" repeatCount="indefinite" />
+                  </path>
+                  <path d="M120,145 C140,155 145,175 135,190 C125,205 100,200 120,180 C140,200 165,205 155,190 C145,175 150,155 170,145" stroke="#F0ABFC" fill="none" stroke-width="0.8">
+                    <animate attributeName="stroke-opacity" values="0.4;0.7;0.4" dur="3.2s" repeatCount="indefinite" />
+                  </path>
+                  <path d="M95,120 C85,140 65,145 50,135 C35,125 40,100 60,120 C40,140 35,165 50,155 C65,145 85,150 95,170" stroke="#F0ABFC" fill="none" stroke-width="0.8">
+                    <animate attributeName="stroke-opacity" values="0.4;0.7;0.4" dur="3.4s" repeatCount="indefinite" />
+                  </path>
+                  <path d="M145,120 C155,140 175,145 190,135 C205,125 200,100 180,120 C200,140 205,165 190,155 C175,145 155,150 145,170" stroke="#F0ABFC" fill="none" stroke-width="0.8">
+                    <animate attributeName="stroke-opacity" values="0.4;0.7;0.4" dur="3.6s" repeatCount="indefinite" />
+                  </path>
+                </g>
+                
+                <!-- Central gem/crystal -->
+                <g>
+                  <polygon points="120,106 128,112 128,128 120,134 112,128 112,112" fill="#F5D0FE" opacity="0.9">
+                    <animate attributeName="opacity" values="0.7;0.95;0.7" dur="2s" repeatCount="indefinite" />
+                  </polygon>
+                  <polygon points="120,100 130,108 130,132 120,140 110,132 110,108" fill="none" stroke="#F0ABFC" stroke-width="0.5">
+                    <animate attributeName="stroke-opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite" />
+                  </polygon>
+                  <circle cx="120" cy="120" r="8" fill="#F0ABFC" opacity="0.9">
+                    <animate attributeName="r" values="8;10;8" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+                  </circle>
+                </g>
+                
+                <!-- Sparkle/shimmer elements -->
+                <g>
+                  <!-- Sparkle bursts -->
+                  <g>
+                    <circle cx="120" cy="70" r="1" fill="#FDFAFF">
+                      <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0s" />
+                    </circle>
+                    <circle cx="170" cy="120" r="1" fill="#FDFAFF">
+                      <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.2s" />
+                    </circle>
+                    <circle cx="120" cy="170" r="1" fill="#FDFAFF">
+                      <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.4s" />
+                    </circle>
+                    <circle cx="70" cy="120" r="1" fill="#FDFAFF">
+                      <animate attributeName="opacity" values="0;1;0" dur="0.8s" repeatCount="indefinite" begin="0.6s" />
+                    </circle>
+                  </g>
+                  
+                  <!-- Moving particles -->
+                  <g>
+                    <circle cx="120" cy="50" r="1.5" fill="#F0ABFC">
+                      <animate attributeName="cy" values="50;190;50" dur="8s" repeatCount="indefinite" />
+                      <animate attributeName="opacity" values="0;0.8;0" dur="8s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="50" cy="120" r="1.5" fill="#F0ABFC">
+                      <animate attributeName="cx" values="50;190;50" dur="9s" repeatCount="indefinite" begin="1s" />
+                      <animate attributeName="opacity" values="0;0.8;0" dur="9s" repeatCount="indefinite" begin="1s" />
+                    </circle>
+                    <circle cx="140" cy="80" r="1.5" fill="#F0ABFC">
+                      <animate attributeName="cx" values="140;100;140" dur="4s" repeatCount="indefinite" begin="0.5s" />
+                      <animate attributeName="cy" values="80;160;80" dur="4s" repeatCount="indefinite" begin="0.5s" />
+                      <animate attributeName="opacity" values="0;0.8;0" dur="4s" repeatCount="indefinite" begin="0.5s" />
+                    </circle>
+                    <circle cx="100" cy="160" r="1.5" fill="#F0ABFC">
+                      <animate attributeName="cx" values="100;140;100" dur="5s" repeatCount="indefinite" begin="2s" />
+                      <animate attributeName="cy" values="160;80;160" dur="5s" repeatCount="indefinite" begin="2s" />
+                      <animate attributeName="opacity" values="0;0.8;0" dur="5s" repeatCount="indefinite" begin="2s" />
+                    </circle>
+                  </g>
+                  
+                  <!-- Subtle light rays -->
+                  <g opacity="0.3">
+                    <line x1="120" y1="90" x2="120" y2="60" stroke="#FDFAFF" stroke-width="0.5">
+                      <animate attributeName="stroke-opacity" values="0.2;0.6;0.2" dur="3s" repeatCount="indefinite" />
+                    </line>
+                    <line x1="120" y1="150" x2="120" y2="180" stroke="#FDFAFF" stroke-width="0.5">
+                      <animate attributeName="stroke-opacity" values="0.2;0.6;0.2" dur="3s" repeatCount="indefinite" begin="0.5s" />
+                    </line>
+                    <line x1="90" y1="120" x2="60" y2="120" stroke="#FDFAFF" stroke-width="0.5">
+                      <animate attributeName="stroke-opacity" values="0.2;0.6;0.2" dur="3s" repeatCount="indefinite" begin="1s" />
+                    </line>
+                    <line x1="150" y1="120" x2="180" y2="120" stroke="#FDFAFF" stroke-width="0.5">
+                      <animate attributeName="stroke-opacity" values="0.2;0.6;0.2" dur="3s" repeatCount="indefinite" begin="1.5s" />
+                    </line>
+                  </g>
+                </g>
+                
+                <!-- Orbiting ethereal elements -->
+                <g>
+                  <circle cx="120" cy="40" r="2" fill="#F5D0FE" filter="url(#shimmer)">
+                    <animateTransform attributeName="transform" type="rotate" from="0 120 120" to="360 120 120" dur="10s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="r" values="2;3;2" dur="4s" repeatCount="indefinite" />
+                  </circle>
+                  <circle cx="200" cy="120" r="2" fill="#F5D0FE" filter="url(#shimmer)">
+                    <animateTransform attributeName="transform" type="rotate" from="90 120 120" to="450 120 120" dur="12s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite" begin="1s" />
+                    <animate attributeName="r" values="2;3;2" dur="4s" repeatCount="indefinite" begin="1s" />
+                  </circle>
+                  <circle cx="120" cy="200" r="2" fill="#F5D0FE" filter="url(#shimmer)">
+                    <animateTransform attributeName="transform" type="rotate" from="180 120 120" to="540 120 120" dur="14s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite" begin="2s" />
+                    <animate attributeName="r" values="2;3;2" dur="4s" repeatCount="indefinite" begin="2s" />
+                  </circle>
+                  <circle cx="40" cy="120" r="2" fill="#F5D0FE" filter="url(#shimmer)">
+                    <animateTransform attributeName="transform" type="rotate" from="270 120 120" to="630 120 120" dur="16s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite" begin="3s" />
+                    <animate attributeName="r" values="2;3;2" dur="4s" repeatCount="indefinite" begin="3s" />
+                  </circle>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Analysis Section -->
+  <div id="analysis-section" class="container mx-auto px-6 mb-20 scroll-mt-24">
+    <!-- Section Title -->
+    <div class="text-center mb-12">
+      <span class="bg-purple-900/30 text-purple-300 py-1 px-4 rounded-full border border-purple-500/20 text-sm inline-block mb-4">
+        <i class="fa-solid fa-wand-magic text-purple-300 mr-2"></i>Experience The Magic
+      </span>
+      <h2 class="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">Get Your Skin Analysis</h2>
+      <p class="text-gray-300 max-w-2xl mx-auto">Upload a selfie in good lighting and tell us your skin concerns to receive personalized recommendations from our AI.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+      <!-- Upload Image Card -->
+      <div class="glass-effect p-8 rounded-2xl shadow-xl border border-purple-700/30 hover:border-purple-500/60 transition-all hover-scale">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-blue-500 flex items-center justify-center mr-4 shadow-lg">
+            <i class="fa-solid fa-camera text-xl text-white"></i>
+          </div>
+          <h2 class="text-2xl font-semibold text-purple-300">Upload Your Selfie</h2>
+        </div>
+
+        <div id="image-container" class="hidden mt-6 p-2 rounded-lg relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-xl"></div>
+          <img id="display-image" src="" alt="Uploaded image" class="w-full rounded-xl shadow-lg relative z-10" />
+        </div>
+
+        <div id="upload-area" class="mt-6 border-2 border-dashed border-purple-500/40 rounded-xl p-8 text-center hover:border-purple-500 transition-all cursor-pointer">
+          <i class="fa-solid fa-cloud-arrow-up text-4xl text-purple-400 mb-4"></i>
+          <p class="text-gray-300 mb-4">Drag & drop your selfie here or click to browse</p>
+          <button id="upload-btn" class="bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg button-glow">
+            Select Photo
+          </button>
+        </div>
+        <input type="file" id="image-upload" accept="image/*" class="hidden" />
+
+        <div class="flex items-center mt-6 bg-purple-900/20 rounded-lg p-3">
+          <i class="fa-solid fa-lightbulb text-yellow-400 mr-3"></i>
+          <p class="text-gray-300 text-sm">For best results, use a well-lit, front-facing photo without makeup</p>
+        </div>
+      </div>
+
+      <!-- Ask Question Card -->
+      <div class="glass-effect p-8 rounded-2xl shadow-xl border border-blue-700/30 hover:border-blue-500/60 transition-all hover-scale">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center mr-4 shadow-lg">
+            <i class="fa-solid fa-comment text-xl text-white"></i>
+          </div>
+          <h2 class="text-2xl font-semibold text-blue-300">Tell Us Your Skin Goals</h2>
+        </div>
+
+        <!-- Quick Select Buttons -->
+        <div class="mb-6 flex flex-wrap gap-2">
+          <span class="quick-concern bg-blue-900/30 text-blue-300 py-1 px-3 rounded-full border border-blue-500/30 text-sm cursor-pointer hover:bg-blue-800/40 transition-colors">Acne</span>
+          <span class="quick-concern bg-blue-900/30 text-blue-300 py-1 px-3 rounded-full border border-blue-500/30 text-sm cursor-pointer hover:bg-blue-800/40 transition-colors">Aging</span>
+          <span class="quick-concern bg-blue-900/30 text-blue-300 py-1 px-3 rounded-full border border-blue-500/30 text-sm cursor-pointer hover:bg-blue-800/40 transition-colors">Dryness</span>
+          <span class="quick-concern bg-blue-900/30 text-blue-300 py-1 px-3 rounded-full border border-blue-500/30 text-sm cursor-pointer hover:bg-blue-800/40 transition-colors">Dark Spots</span>
+          <span class="quick-concern bg-blue-900/30 text-blue-300 py-1 px-3 rounded-full border border-blue-500/30 text-sm cursor-pointer hover:bg-blue-800/40 transition-colors">Oiliness</span>
+          <span class="quick-concern bg-blue-900/30 text-blue-300 py-1 px-3 rounded-full border border-blue-500/30 text-sm cursor-pointer hover:bg-blue-800/40 transition-colors">Redness</span>
+        </div>
+
+        <textarea id="query-input" rows="5" placeholder="Example: I'm concerned about acne and dark spots. What products would help my skin? Or: I need a routine for my dry skin with fine lines."
+          class="w-full p-4 bg-gray-800/60 text-gray-100 rounded-lg shadow border border-blue-700/30 focus:border-blue-500 focus:ring focus:ring-blue-500/20 focus:outline-none transition-all"></textarea>
+
+        <button id="submit-query" class="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-lg mt-6 transition-all shadow-lg button-glow">
+          <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Get Your Personalized Recommendations
+        </button>
+
+        <!-- Progress Indicator -->
+        <div id="progress-container" class="hidden mt-6">
+          <div class="flex justify-between mb-2 text-sm">
+            <span class="text-blue-300">Analysis in progress...</span>
+            <span id="progress-percentage" class="text-blue-300">0%</span>
+          </div>
+          <div class="w-full bg-gray-700 rounded-full h-2.5">
+            <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2.5 rounded-full w-0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <!-- Skin Analysis Response -->
+      <div class="glass-effect p-8 rounded-2xl shadow-xl border border-green-700/30 hover:border-green-500/40 transition-all">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 flex items-center justify-center mr-4 shadow-lg">
+            <i class="fa-solid fa-magnifying-glass text-xl text-white"></i>
+          </div>
+          <h2 class="text-2xl font-semibold text-green-300">Expert Skin Analysis</h2>
+        </div>
+
+        <div id="response-container-analysis" class="hidden mt-4 bg-gray-800/60 p-6 rounded-lg text-gray-100 prose prose-invert max-w-none"></div>
+
+        <div id="loading-analysis" class="hidden mt-8 py-10 text-center">
+          <div class="w-20 h-20 mx-auto mb-4 relative">
+            <div class="absolute inset-0 rounded-full border-4 border-green-500/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-l-green-500 border-t-green-500 border-r-transparent border-b-transparent animate-spin"></div>
+          </div>
+          <p class="mt-4 text-green-300 text-lg">Analyzing your skin features...</p>
+          <p class="text-gray-400 text-sm mt-2">Our AI is examining skin texture, tone, and concerns</p>
+        </div>
+      </div>
+
+      <!-- Product Recommendations Response -->
+      <div class="glass-effect p-8 rounded-2xl shadow-xl border border-pink-700/30 hover:border-pink-500/40 transition-all">
+        <div class="flex items-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center mr-4 shadow-lg">
+            <i class="fa-solid fa-star text-xl text-white"></i>
+          </div>
+          <h2 class="text-2xl font-semibold text-pink-300">Product Recommendations</h2>
+        </div>
+
+        <div id="response-container-recommendations" class="hidden mt-4 bg-gray-800/60 p-6 rounded-lg text-gray-100 prose prose-invert max-w-none"></div>
+
+        <div id="loading-recommendations" class="hidden mt-8 py-10 text-center">
+          <div class="w-20 h-20 mx-auto mb-4 relative">
+            <div class="absolute inset-0 rounded-full border-4 border-pink-500/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-l-pink-500 border-t-pink-500 border-r-transparent border-b-transparent animate-spin"></div>
+          </div>
+          <p class="mt-4 text-pink-300 text-lg">Curating personalized products...</p>
+          <p class="text-gray-400 text-sm mt-2">Matching your skin type with effective ingredients</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="error-container" class="hidden mx-auto max-w-2xl p-5 bg-red-900/70 backdrop-blur-sm text-white rounded-xl border border-red-600 shadow-xl">
+      <div class="flex items-center">
+        <div class="w-12 h-12 rounded-full bg-red-600/60 flex items-center justify-center mr-4">
+          <i class="fa-solid fa-triangle-exclamation text-xl text-white"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-lg text-red-200">Something went wrong</h3>
+          <p id="error-text" class="font-medium text-gray-100"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works Section -->
+  <div id="how-it-works" class="py-20 bg-gray-800/50 backdrop-blur-sm border-y border-purple-700/20 scroll-mt-24">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <span class="bg-purple-900/30 text-purple-300 py-1 px-4 rounded-full border border-purple-500/20 text-sm inline-block mb-4">
+          <i class="fa-solid fa-circle-question mr-2"></i>Process
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">How GlowU Works</h2>
+        <p class="text-gray-300 max-w-2xl mx-auto">Our advanced AI technology analyzes your skin in seconds to deliver personalized recommendations.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <!-- Step 1 -->
+        <div class="relative">
+          <div class="hidden md:block absolute top-1/4 -right-6 w-12 h-2 bg-gradient-to-r from-purple-500 to-transparent"></div>
+
+          <div class="text-center relative">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-purple-500/20 flex items-center justify-center text-3xl border-2 border-purple-500">
+              <i class="fa-solid fa-camera text-purple-400"></i>
+            </div>
+            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">1</div>
+            <h3 class="text-xl font-semibold text-purple-300 mb-3">Upload Your Selfie</h3>
+            <p class="text-gray-300">Take or upload a clear selfie in natural lighting for the most accurate analysis of your unique skin features.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="relative">
+          <div class="hidden md:block absolute top-1/4 -left-6 w-12 h-2 bg-gradient-to-l from-blue-500 to-transparent"></div>
+          <div class="hidden md:block absolute top-1/4 -right-6 w-12 h-2 bg-gradient-to-r from-blue-500 to-transparent"></div>
+
+          <div class="text-center relative">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-500/20 flex items-center justify-center text-3xl border-2 border-blue-500">
+              <i class="fa-solid fa-brain text-blue-400"></i>
+            </div>
+            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">2</div>
+            <h3 class="text-xl font-semibold text-blue-300 mb-3">AI Analysis</h3>
+            <p class="text-gray-300">Our advanced AI examines your skin type, texture, concerns, and needs based on your photo and your specific goals.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="relative">
+          <div class="hidden md:block absolute top-1/4 -left-6 w-12 h-2 bg-gradient-to-l from-transparent to-pink-500"></div>
+
+          <div class="text-center relative">
+            <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-pink-500/20 flex items-center justify-center text-3xl border-2 border-pink-500">
+              <i class="fa-solid fa-list-check text-pink-400"></i>
+            </div>
+            <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-pink-600 text-white flex items-center justify-center font-bold">3</div>
+            <h3 class="text-xl font-semibold text-pink-300 mb-3">Personalized Recommendations</h3>
+            <p class="text-gray-300">Receive customized skincare advice, product recommendations, and routine suggestions tailored to your skin.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Features -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
+        <div class="glass-effect p-6 rounded-xl shadow-lg border border-purple-700/20 hover-scale">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center mr-4">
+              <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Privacy Focused</h3>
+          </div>
+          <p class="text-gray-300">Your photos are analyzed securely and never stored or shared with third parties. We prioritize your privacy at every step.</p>
+        </div>
+
+        <div class="glass-effect p-6 rounded-xl shadow-lg border border-purple-700/20 hover-scale">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center mr-4">
+              <i class="fa-solid fa-bolt-lightning text-white text-xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Instant Results</h3>
+          </div>
+          <p class="text-gray-300">Get comprehensive skin analysis and product recommendations in seconds - no waiting or scheduling required.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <div id="about" class="py-20 bg-gray-800/50 backdrop-blur-sm border-y border-purple-700/20 scroll-mt-24">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <span class="bg-purple-900/30 text-purple-300 py-1 px-4 rounded-full border border-purple-500/20 text-sm inline-block mb-4">
+            <i class="fa-solid fa-info-circle mr-2"></i>About Us
+          </span>
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">The Science Behind GlowGuru</h2>
+          <p class="text-gray-300 mb-6">GlowGuru combines advanced computer vision and deep learning techniques to analyze facial features and skin conditions with exceptional accuracy. Our AI has been trained on diverse skin types, tones, and conditions to ensure everyone receives personalized recommendations.</p>
+          <p class="text-gray-300 mb-8">We work with dermatologists and skincare chemists to ensure our product recommendations are backed by science and tailored to your unique skin profile.</p>
+          <div class="flex space-x-4">
+            <div class="p-4 bg-purple-900/20 rounded-lg border border-purple-500/30 flex items-center">
+              <div class="mr-3 text-purple-400 text-2xl">
+                <i class="fa-solid fa-check-circle"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white">Dermatologist Approved</h3>
+                <p class="text-gray-300 text-sm">Validated by skin experts</p>
+              </div>
+            </div>
+            <div class="p-4 bg-blue-900/20 rounded-lg border border-blue-500/30 flex items-center">
+              <div class="mr-3 text-blue-400 text-2xl">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white">99.8% Accuracy</h3>
+                <p class="text-gray-300 text-sm">In clinical testing</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-3xl transform rotate-3"></div>
+          <div class="relative z-10 rounded-3xl shadow-2xl border border-purple-500/30 overflow-hidden">
+            <div class="w-full h-96 bg-gray-800 flex items-center justify-center">
+              <!-- Beauty AI Technology SVG -->
+              <svg width="320" height="320" viewBox="0 0 320 320">
+                <!-- Definitions for gradients and filters -->
+                <defs>
+                  <!-- Main background gradient -->
+                  <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366F1" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#EC4899" stop-opacity="0.2"/>
+                  </linearGradient>
+                  
+                  <!-- AI circuit gradient -->
+                  <linearGradient id="circuit-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.8"/>
+                  </linearGradient>
+                  
+                  <!-- Face scan gradient -->
+                  <linearGradient id="scan-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#A78BFA" stop-opacity="0"/>
+                    <stop offset="50%" stop-color="#A78BFA" stop-opacity="0.5"/>
+                    <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+                  </linearGradient>
+                  
+                  <!-- Glow filter -->
+                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="4" result="blur"/>
+                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                  </filter>
+                  
+                  <!-- Sparkle filter -->
+                  <filter id="sparkle" x="-50%" y="-50%" width="200%" height="200%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" result="noise"/>
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+                  </filter>
+                  
+                  <!-- Shimmer pattern -->
+                  <pattern id="shimmer" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
+                    <rect x="0" y="0" width="100%" height="100%" fill="#A78BFA" fill-opacity="0.1"/>
+                    <circle cx="10" cy="10" r="8" fill="#F5D0FE" fill-opacity="0.2">
+                      <animate attributeName="opacity" values="0.2;0.4;0.2" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                  </pattern>
+                </defs>
+                
+                <!-- Background elements -->
+                <rect x="10" y="10" width="300" height="300" rx="20" fill="url(#bg-gradient)"/>
+                <circle cx="160" cy="160" r="140" fill="url(#shimmer)" opacity="0.6">
+                  <animate attributeName="r" values="140;145;140" dur="8s" repeatCount="indefinite"/>
+                </circle>
+                
+                <!-- AI Circuit Pattern -->
+                <g class="ai-circuits" opacity="0.7">
+                  <!-- Horizontal lines -->
+                  <line x1="40" y1="80" x2="280" y2="80" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  <line x1="40" y1="120" x2="280" y2="120" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  <line x1="40" y1="200" x2="280" y2="200" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  <line x1="40" y1="240" x2="280" y2="240" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  
+                  <!-- Vertical lines -->
+                  <line x1="80" y1="40" x2="80" y2="280" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  <line x1="160" y1="40" x2="160" y2="280" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  <line x1="240" y1="40" x2="240" y2="280" stroke="url(#circuit-gradient)" stroke-width="1.5"/>
+                  
+                  <!-- Nodes -->
+                  <circle cx="80" cy="80" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="80" cy="120" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="80" cy="200" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="80" cy="240" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite"/>
+                  </circle>
+                  
+                  <circle cx="160" cy="80" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.3s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="160" cy="120" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.7s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="160" cy="200" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.1s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="160" cy="240" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.4s" repeatCount="indefinite"/>
+                  </circle>
+                  
+                  <circle cx="240" cy="80" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.2s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="240" cy="120" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.6s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="240" cy="200" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.3s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="240" cy="240" r="4" fill="#A78BFA" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.7;1;0.7" dur="2.5s" repeatCount="indefinite"/>
+                  </circle>
+                </g>
+                
+                <!-- Beauty Face Analysis -->
+                <g>
+                  <!-- Face outline -->
+                  <path d="M160,90 C190,90 215,115 215,145 C215,175 205,195 180,215 C170,225 165,230 160,240 C155,230 150,225 140,215 C115,195 105,175 105,145 C105,115 130,90 160,90 Z" fill="none" stroke="#F5D0FE" stroke-width="1.5" opacity="0.8" />
+                  
+                  <!-- Face scan effect -->
+                  <rect x="105" y="90" width="110" height="150" fill="url(#scan-gradient)" opacity="0.5">
+                    <animate attributeName="y" values="90;240;90" dur="4s" repeatCount="indefinite"/>
+                  </rect>
+                  
+                  <!-- Analysis points -->
+                  <circle cx="130" cy="140" r="2" fill="#F0ABFC">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="190" cy="140" r="2" fill="#F0ABFC">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                  </circle>
+                  <circle cx="160" cy="120" r="2" fill="#F0ABFC">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="0.6s"/>
+                  </circle>
+                  <circle cx="145" cy="160" r="2" fill="#F0ABFC">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="0.9s"/>
+                  </circle>
+                  <circle cx="175" cy="160" r="2" fill="#F0ABFC">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="1.2s"/>
+                  </circle>
+                  <circle cx="160" cy="190" r="2" fill="#F0ABFC">
+                    <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" begin="1.5s"/>
+                  </circle>
+                  
+                  <!-- Analysis lines -->
+                  <line x1="130" y1="140" x2="110" y2="120" stroke="#F0ABFC" stroke-width="0.5" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+                  </line>
+                  <line x1="190" y1="140" x2="210" y2="120" stroke="#F0ABFC" stroke-width="0.5" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                  </line>
+                  <line x1="160" y1="120" x2="160" y2="100" stroke="#F0ABFC" stroke-width="0.5" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="0.6s"/>
+                  </line>
+                  <line x1="145" y1="160" x2="125" y2="180" stroke="#F0ABFC" stroke-width="0.5" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="0.9s"/>
+                  </line>
+                  <line x1="175" y1="160" x2="195" y2="180" stroke="#F0ABFC" stroke-width="0.5" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1.2s"/>
+                  </line>
+                  <line x1="160" y1="190" x2="160" y2="210" stroke="#F0ABFC" stroke-width="0.5" opacity="0.6">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="1.5s"/>
+                  </line>
+                </g>
+                
+                <!-- Beauty product elements -->
+                <g>
+                  <!-- Floating beauty product outlines -->
+                  <rect x="60" y="60" width="20" height="30" rx="4" fill="none" stroke="#F0ABFC" stroke-width="1" opacity="0.6">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; 5,5; 0,0" dur="4s" repeatCount="indefinite"/>
+                  </rect>
+                  <circle cx="260" cy="70" r="12" fill="none" stroke="#F0ABFC" stroke-width="1" opacity="0.6">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; -5,5; 0,0" dur="4.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <rect x="50" y="250" width="25" height="15" rx="4" fill="none" stroke="#F0ABFC" stroke-width="1" opacity="0.6">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; 5,-5; 0,0" dur="5s" repeatCount="indefinite"/>
+                  </rect>
+                  <ellipse cx="260" cy="250" rx="15" ry="10" fill="none" stroke="#F0ABFC" stroke-width="1" opacity="0.6">
+                    <animateTransform attributeName="transform" type="translate" values="0,0; -5,-5; 0,0" dur="4.2s" repeatCount="indefinite"/>
+                  </ellipse>
+                </g>
+                
+                <!-- Data visualization elements -->
+                <g>
+                  <!-- Beauty metrics -->
+                  <g transform="translate(240, 40)">
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#C4B5FD" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="12" fill="none" stroke="#F0ABFC" stroke-width="2" stroke-dasharray="40" stroke-dashoffset="30">
+                      <animate attributeName="stroke-dashoffset" values="30;10;30" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                  </g>
+                  
+                  <g transform="translate(40, 40)">
+                    <rect x="-8" y="-8" width="16" height="16" fill="none" stroke="#C4B5FD" stroke-width="1" transform="rotate(45)"/>
+                    <rect x="-8" y="-8" width="16" height="16" fill="none" stroke="#F0ABFC" stroke-width="2" stroke-dasharray="40" stroke-dashoffset="20" transform="rotate(45)">
+                      <animate attributeName="stroke-dashoffset" values="20;0;20" dur="3.5s" repeatCount="indefinite"/>
+                    </rect>
+                  </g>
+                  
+                  <g transform="translate(40, 280)">
+                    <path d="M-10,-6 L0,-10 L10,-6 L10,6 L0,10 L-10,6 Z" fill="none" stroke="#C4B5FD" stroke-width="1"/>
+                    <path d="M-10,-6 L0,-10 L10,-6 L10,6 L0,10 L-10,6 Z" fill="none" stroke="#F0ABFC" stroke-width="2" stroke-dasharray="40" stroke-dashoffset="10">
+                      <animate attributeName="stroke-dashoffset" values="10;30;10" dur="4s" repeatCount="indefinite"/>
+                    </path>
+                  </g>
+                  
+                  <g transform="translate(280, 280)">
+                    <circle cx="0" cy="0" r="8" fill="none" stroke="#C4B5FD" stroke-width="1"/>
+                    <path d="M0,-8 A8,8 0 1,1 -8,0" fill="none" stroke="#F0ABFC" stroke-width="2">
+                      <animate attributeName="d" values="M0,-8 A8,8 0 0,1 0,8; M0,-8 A8,8 0 1,1 -8,0; M0,-8 A8,8 0 0,1 0,8" dur="4.5s" repeatCount="indefinite"/>
+                    </path>
+                  </g>
+                </g>
+                
+                <!-- Central decoration -->
+                <g transform="translate(160, 160)">
+                  <circle cx="0" cy="0" r="20" fill="#7C3AED" opacity="0.15" filter="url(#glow)">
+                    <animate attributeName="r" values="20;25;20" dur="4s" repeatCount="indefinite"/>
+                  </circle>
+                  
+                  <!-- Beauty AI Symbol -->
+                  <g opacity="0.9">
+                    <path d="M0,-12 C6,-12 12,-6 12,0 C12,6 6,12 0,12 C-6,12 -12,6 -12,0 C-12,-6 -6,-12 0,-12Z" fill="none" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+                    </path>
+                    <path d="M-6,-6 L6,6 M-6,6 L6,-6" stroke="#F5D0FE" stroke-width="1.5">
+                      <animate attributeName="stroke-opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite" begin="1s"/>
+                    </path>
+                    <circle cx="0" cy="0" r="3" fill="#F5D0FE">
+                      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                  </g>
+                </g>
+                
+                <!-- Sparkle effects -->
+                <g>
+                  <circle cx="90" cy="200" r="1" fill="#F5D0FE" filter="url(#sparkle)">
+                    <animate attributeName="opacity" values="0;1;0" dur="1.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="130" cy="100" r="1" fill="#F5D0FE" filter="url(#sparkle)">
+                    <animate attributeName="opacity" values="0;1;0" dur="1.8s" repeatCount="indefinite" begin="0.3s"/>
+                  </circle>
+                  <circle cx="190" cy="100" r="1" fill="#F5D0FE" filter="url(#sparkle)">
+                    <animate attributeName="opacity" values="0;1;0" dur="1.2s" repeatCount="indefinite" begin="0.6s"/>
+                  </circle>
+                  <circle cx="230" cy="200" r="1" fill="#F5D0FE" filter="url(#sparkle)">
+                    <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite" begin="0.9s"/>
+                  </circle>
+                  <circle cx="160" cy="70" r="1" fill="#F5D0FE" filter="url(#sparkle)">
+                    <animate attributeName="opacity" values="0;1;0" dur="1.7s" repeatCount="indefinite" begin="1.2s"/>
+                  </circle>
+                  <circle cx="160" cy="250" r="1" fill="#F5D0FE" filter="url(#sparkle)">
+                    <animate attributeName="opacity" values="0;1;0" dur="1.3s" repeatCount="indefinite" begin="1.5s"/>
+                  </circle>
+                </g>
+                
+                <!-- Moving data particles -->
+                <g opacity="0.7">
+                  <circle cx="160" cy="40" r="2" fill="#F0ABFC">
+                    <animate attributeName="cy" values="40;280;40" dur="6s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0;0.7;0" dur="6s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="40" cy="160" r="2" fill="#F0ABFC">
+                    <animate attributeName="cx" values="40;280;40" dur="7s" repeatCount="indefinite" begin="1s"/>
+                    <animate attributeName="opacity" values="0;0.7;0" dur="7s" repeatCount="indefinite" begin="1s"/>
+                  </circle>
+                  <circle cx="280" cy="160" r="2" fill="#F0ABFC">
+                    <animate attributeName="cx" values="280;40;280" dur="8s" repeatCount="indefinite" begin="2s"/>
+                    <animate attributeName="opacity" values="0;0.7;0" dur="8s" repeatCount="indefinite" begin="2s"/>
+                  </circle>
+                  <circle cx="160" cy="280" r="2" fill="#F0ABFC">
+                    <animate attributeName="cy" values="280;40;280" dur="9s" repeatCount="indefinite" begin="3s"/>
+                    <animate attributeName="opacity" values="0;0.7;0" dur="9s" repeatCount="indefinite" begin="3s"/>
+                  </circle>
+                </g>
+                
+                <!-- Text labels -->
+                <g font-family="Arial, sans-serif" font-size="8" fill="#E9D5FF">
+                  <text x="160" y="40" text-anchor="middle">BEAUTY AI</text>
+                  <text x="160" y="285" text-anchor="middle">SKIN ANALYSIS</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 border-t border-purple-800/20 pt-16 pb-8">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div class="md:col-span-1">
+          <div class="flex items-center space-x-2 mb-4">
+            <div class="w-10 h-10 rounded-full shadow-md border border-purple-500/30 flex items-center justify-center bg-gray-800">
+              <i class="fa-solid fa-spa text-purple-400 text-lg"></i>
+            </div>
+            <h1 class="text-xl font-bold text-white tracking-wide glow-text">
+              Glow<span class="text-purple-400">U</span>
+            </h1>
+          </div>
+          <p class="text-gray-400 mb-6">Your personal AI-powered skincare advisor, providing tailored recommendations for your unique skin.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-purple-800/30 flex items-center justify-center border border-purple-500/30 transition-colors">
+              <i class="fa-brands fa-twitter text-gray-400 hover:text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-purple-800/30 flex items-center justify-center border border-purple-500/30 transition-colors">
+              <i class="fa-brands fa-instagram text-gray-400 hover:text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-purple-800/30 flex items-center justify-center border border-purple-500/30 transition-colors">
+              <i class="fa-brands fa-tiktok text-gray-400 hover:text-white"></i>
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4 text-lg">Features</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Skin Analysis</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Product Recommendations</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Routine Builder</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Ingredient Dictionary</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4 text-lg">Resources</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Skincare Blog</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Skin Type Guide</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Ingredient Library</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold mb-4 text-lg">Company</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">About Us</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Contact</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-400 hover:text-purple-300 transition-colors">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 border-t border-gray-800 text-center">
+        <p class="text-gray-500 text-sm">&copy; 2025 GlowU. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const uploadBtn = document.getElementById('upload-btn');
+  const imageUpload = document.getElementById('image-upload');
+  const displayImage = document.getElementById('display-image');
+  const imageContainer = document.getElementById('image-container');
+  const uploadArea = document.getElementById('upload-area');
+  const queryInput = document.getElementById('query-input');
+  const submitQuery = document.getElementById('submit-query');
+  const responseAnalysis = document.getElementById('response-container-analysis');
+  const responseRecommendations = document.getElementById('response-container-recommendations');
+  const loadingAnalysis = document.getElementById('loading-analysis');
+  const loadingRecommendations = document.getElementById('loading-recommendations');
+  const errorContainer = document.getElementById('error-container');
+  const errorText = document.getElementById('error-text');
+  const progressContainer = document.getElementById('progress-container');
+  const progressBar = document.getElementById('progress-bar');
+  const progressPercentage = document.getElementById('progress-percentage');
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  const quickConcerns = document.querySelectorAll('.quick-concern');
+
+  // Mobile Menu Toggle
+  mobileMenuButton.addEventListener('click', () => {
+    if (mobileMenu.classList.contains('hidden')) {
+      mobileMenu.classList.remove('hidden');
+      mobileMenuButton.innerHTML = '<i class="fa-solid fa-xmark text-2xl"></i>';
+    } else {
+      mobileMenu.classList.add('hidden');
+      mobileMenuButton.innerHTML = '<i class="fa-solid fa-bars text-2xl"></i>';
+    }
+  });
+
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      mobileMenu.classList.add('hidden');
+      mobileMenuButton.innerHTML = '<i class="fa-solid fa-bars text-2xl"></i>';
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+
+  // Image Upload Preview
+  uploadBtn.addEventListener('click', () => {
+    imageUpload.click();
+  });
+
+  uploadArea.addEventListener('click', () => {
+    imageUpload.click();
+  });
+
+  imageUpload.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        displayImage.src = event.target.result;
+        imageContainer.classList.remove('hidden');
+        uploadArea.classList.add('hidden');
+        uploadBtn.textContent = 'Change Photo';
+        uploadBtn.classList.remove('bg-gradient-to-r', 'from-purple-600', 'to-blue-500');
+        uploadBtn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Quick concern selection
+  quickConcerns.forEach(concern => {
+    concern.addEventListener('click', () => {
+      const concernText = concern.textContent.trim();
+      queryInput.value = `I'm concerned about ${concernText.toLowerCase()}. What products would help my skin?`;
+    });
+  });
+
+  // Typewriter effect function
+  function typewriterEffect(element, text, speed = 1) {
+    return new Promise((resolve) => {
+      element.innerHTML = '';
+      let i = 0;
+      const typing = setInterval(() => {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(typing);
+          resolve();
+        }
+      }, speed);
+    });
+  }
+
+  // Function to recursively type out content from the parsed HTML
+  async function typeContent(element, targetContainer) {
+    // If it's a text node, type it out
+    if (element.nodeType === Node.TEXT_NODE && element.textContent.trim() !== '') {
+      await typewriterEffect(targetContainer, element.textContent, 10);
+      return;
+    }
+    
+    // If it's an element node
+    if (element.nodeType === Node.ELEMENT_NODE) {
+      // Create a new element of the same type
+      const newElement = document.createElement(element.tagName);
+      
+      // Copy attributes
+      for (const attr of element.attributes) {
+        newElement.setAttribute(attr.name, attr.value);
+      }
+      
+      // Add the new element to the target container
+      targetContainer.appendChild(newElement);
+      
+      // Type out its children
+      for (const child of element.childNodes) {
+        await typeContent(child, newElement);
+      }
+    }
+  }
+
+  // Apply typewriter effect to container
+  async function applyTypewriterToContainer(container, content) {
+    // Create a temporary div to hold the parsed HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    
+    // Clear container and make it visible
+    container.innerHTML = "";
+    container.classList.remove('hidden');
+    
+    // Start typing out the content
+    for (const child of tempDiv.childNodes) {
+      await typeContent(child, container);
+    }
+  }
+
+  // Submit query functionality
+  submitQuery.addEventListener('click', async () => {
+    const image = imageUpload.files[0];
+    const query = queryInput.value;
+
+    if (!image) {
+      showError('⚠️ Please upload a selfie first');
+      return;
+    }
+
+    if (!query || query.trim().length < 5) {
+      showError('⚠️ Please tell us more about your skin concerns or goals');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', image);
+    formData.append('query', query);
+
+    try {
+      // Show loading states
+      loadingAnalysis.classList.remove('hidden');
+      loadingRecommendations.classList.remove('hidden');
+      responseAnalysis.classList.add('hidden');
+      responseRecommendations.classList.add('hidden');
+
+      // Disable submit button
+      submitQuery.disabled = true;
+      submitQuery.classList.add('opacity-70');
+      submitQuery.textContent = 'Analyzing Your Skin...';
+
+      const response = await fetch('/upload_and_query', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'An error occurred while processing your request.');
+      }
+
+      // Hide loading indicators
+      loadingAnalysis.classList.add('hidden');
+      loadingRecommendations.classList.add('hidden');
+
+      // Apply typewriter effect to both analysis and recommendations
+      const parsedAnalysis = marked.parse(result.analysis);
+      const parsedRecommendations = marked.parse(result.recommendations);
+      
+      // First type out the analysis
+      await applyTypewriterToContainer(responseAnalysis, parsedAnalysis);
+      
+      // Then type out the recommendations
+      await applyTypewriterToContainer(responseRecommendations, parsedRecommendations);
+
+      errorContainer.classList.add('hidden');
+
+      // Smooth scroll to results
+      responseAnalysis.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (error) {
+      console.error('Error:', error);
+      showError(error.message);
+
+      // Hide loading indicators
+      loadingAnalysis.classList.add('hidden');
+      loadingRecommendations.classList.add('hidden');
+    } finally {
+      submitQuery.disabled = false;
+      submitQuery.classList.remove('opacity-70');
+      submitQuery.textContent = 'Get Your Personalized Recommendations';
+    }
+  });
+
+  function showError(message) {
+    errorText.textContent = message;
+    errorContainer.classList.remove('hidden');
+
+    // Smooth scroll to error
+    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // FAQ Accordion
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      const answer = question.nextElementSibling;
+      const icon = question.querySelector('i');
+
+      if (answer.classList.contains('hidden')) {
+        answer.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+      } else {
+        answer.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+      }
+    });
+  });
+
+  // Initialize GSAP animations
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero section animations
+  gsap.from('#hero-text', {
+    opacity: 0,
+    x: -50,
+    duration: 1,
+    ease: 'power3.out'
+  });
+
+  gsap.from('#hero-image', {
+    opacity: 0,
+    x: 50,
+    duration: 1,
+    ease: 'power3.out',
+    delay: 0.3
+  });
+
+  // How It Works section animations
+  gsap.from('#how-it-works .relative', {
+    opacity: 0,
+    y: 50,
+    stagger: 0.2,
+    duration: 0.8,
+    scrollTrigger: {
+      trigger: '#how-it-works',
+      start: 'top 80%',
+      end: 'bottom 70%',
+      toggleActions: 'play none none none'
+    }
+  });
+
+  // Testimonial cards animations
+  gsap.from('.testimonial-card', {
+    opacity: 0,
+    y: 30,
+    stagger: 0.15,
+    duration: 0.6,
+    scrollTrigger: {
+      trigger: '#testimonials',
+      start: 'top 75%',
+      end: 'bottom 70%',
+      toggleActions: 'play none none none'
+    }
+  });
+
+  // Results showcase animations
+  gsap.from('.before-after-slider', {
+    opacity: 0,
+    scale: 0.95,
+    stagger: 0.2,
+    duration: 0.8,
+    scrollTrigger: {
+      trigger: '.before-after-slider',
+      start: 'top 80%',
+      end: 'bottom 70%',
+      toggleActions: 'play none none none'
+    }
+  });
+
+  // About section animations
+  gsap.from('#about .glass-effect', {
+    opacity: 0,
+    x: 40,
+    duration: 1,
+    scrollTrigger: {
+      trigger: '#about',
+      start: 'top 70%',
+      end: 'bottom 60%',
+      toggleActions: 'play none none none'
+    }
+  });
+
+  // FAQ animations
+  gsap.from('.faq-question', {
+    opacity: 0,
+    y: 20,
+    stagger: 0.1,
+    duration: 0.5,
+    scrollTrigger: {
+      trigger: '.faq-question',
+      start: 'top 80%',
+      end: 'bottom 70%',
+      toggleActions: 'play none none none'
+    }
+  });
+});
+  </script>  
+</body>
+</html>
